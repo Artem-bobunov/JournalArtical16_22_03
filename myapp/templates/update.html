@@ -1,0 +1,19 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block container %}
+<script>
+
+</script>
+<!--Регистрация данных-->
+
+    {% if users  == '07' %}
+        {% include "update07.html" %}
+    {% endif %}
+    {% if users  == '08' %}
+        {% include "update08.html" %}
+    {% endif %}
+    {% if users  == '09' %}
+        {% include "update09.html" %}
+    {% endif %}
+{% endblock %}

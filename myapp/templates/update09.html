@@ -1,0 +1,359 @@
+<div style="align-items: center;
+    display: flex;
+    flex-direction: column;">
+    <h5 class="card-title" style="padding-bottom: 2%"><b>Редактирование данных документа с номером
+        исходящего {{ reg.numberIshod }} </b></h5>
+    <div style="display: flex">
+        <div class="mb-4 card width_table_detail09">
+            <div class="card-header li__flex" style="display: flex">
+                <h5 class="card-title" style="width: 25rem;">Регистрационные данные</h5>
+                <div class="margin__left__input_d">
+                    <t style="font-size:0.8rem">Раскрыть данные</t>
+
+                    <input class="form-check-input form-check-input1" type="checkbox" name="detail09"
+                           id="check_detail09" onclick="check_detail09()">
+                </div>
+            </div>
+            <div id="check_detail09_1" style="display:none">
+                <table class="table table-hover ">
+                    <tbody>
+                    <tr>
+                        <td>Дата исходящего</td>
+                        <td> {{ reg.dateIshod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Номер исходящего</td>
+                        <td> {{ reg.numberIshod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата возникновения основания</td>
+                        <td> {{ reg.deteVoznikosnov|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата входящего</td>
+                        <td> {{ reg.dateVhod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Номер входящего документа</td>
+                        <td> {{ reg.numberVhod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата отправки по ФЗ</td>
+                        <td> {{ reg.dateOtpravkiPoFz|default:'' }}</td>
+                    </tr>
+
+                    <tr style="border-bottom: #fff;">
+                        <td>Вид объекта</td>
+                        <td>
+                            {% if reg.zu != None %}
+                                {{ reg.zu }}<br>
+                            {% endif %}
+
+                            {% if reg.oks != None %}
+                                {{ reg.oks }}
+
+                            {% endif %}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mb-4 card width_primechanie_detail_oks">
+        <div class="card-header" style="display: flex">
+            <h5 class="card-title">ЗУ</h5>
+            <div class="margin__left__input_d">
+                <t style="font-size:0.8rem">Раскрыть данные</t>
+                <input class="form-check-input form-check-input1" type="checkbox" name="zu09" id="check_zu09"
+                       onclick="check_zu09()">
+            </div>
+        </div>
+        <div id="check_zu09_1" style="display:none">
+
+            <table class="table table-hover table-sm">
+                <tr>
+                    <td>Название перечня в АСОН</td>
+                    <td> {{ reg.nameAson_zu|default:'' }}</td>
+                </tr>
+                <tr>
+                    <td>Загружено ОН</td>
+                    <td> {{ reg.zagruzhenoOH_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Получено ОН</td>
+                    <td> {{ reg.poluchenoOH_zu }}</td>
+                </tr>
+                <tr class="border__table">
+                    <td>Потворных ОН</td>
+                    <td> {{ reg.povtornyhOH_zu }}</td>
+                </tr>
+        <tr>
+            <td>СХ</td>
+            <td> {{obj.sx}}</td>
+        </tr>
+        <tr>
+            <td>Название СХ</td>
+            <td> {{obj.nameSx|default:''}}</td>
+        </tr>
+        <tr >
+            <td>№ акта CХ</td>
+            <td> {{obj.numberSx|default:''}}</td>
+        </tr>
+        <tr class="border__table">
+            <td>Дата CХ</td>
+            <td> {{obj.date_Sx|date:'d.m.y'|default:''}}</td>
+        </tr>
+        <tr>
+            <td>НП</td>
+            <td> {{obj.np}}</td>
+        </tr>
+        <tr>
+            <td>Название НП</td>
+            <td> {{obj.nameNp|default:''}}</td>
+        </tr>
+        <tr >
+            <td>№ акта НП</td>
+            <td> {{obj.numberNp|default:''}}</td>
+        </tr>
+        <tr class="border__table">
+            <td>Дата НП</td>
+            <td> {{obj.date_Np|date:'d.m.y'|default:''}}</td>
+        </tr>
+        <tr>
+            <td>ООТ</td>
+            <td> {{obj.oot}}</td>
+        </tr>
+        <tr>
+            <td>Название ООТ</td>
+            <td> {{obj.nameOot|default:''}}</td>
+        </tr>
+        <tr>
+            <td>№ акта ООТ</td>
+            <td> {{obj.numberOot|default:''}}</td>
+        </tr>
+        <tr class="border__table">
+            <td>Дата ООТ</td>
+            <td> {{obj.date_Oot|date:'d.m.y'|default:''}}</td>
+        </tr>
+        <tr>
+            <td>ВФ</td>
+            <td> {{obj.vf}}</td>
+        </tr>
+        <tr>
+            <td>Название ВФ</td>
+            <td> {{obj.nameVf|default:''}}</td>
+        </tr>
+        <tr >
+            <td>№ акта ВФ</td>
+            <td> {{obj.numberVf|default:''}}</td>
+        </tr>
+        <tr class="border__table">
+            <td>Дата ВФ</td>
+            <td> {{obj.date_Vf|date:'d.m.y'|default:''}}</td>
+        </tr>
+
+                <tr>
+                    <td>Пром</td>
+                    <td> {{ reg.prom }}</td>
+                </tr>
+                <tr>
+                    <td>ЛФ</td>
+                    <td> {{ reg.lf }}</td>
+                </tr>
+                <tr>
+                    <td>ЗЗ</td>
+                    <td> {{ reg.zz }}</td>
+                </tr>
+                <tr>
+                    <td>ЛФ</td>
+                    <td> {{ reg.lf }}</td>
+                </tr>
+                <tr>
+                    <td>Без кат</td>
+                    <td> {{ reg.bezCat }}</td>
+                </tr>
+                <tr>
+                    <td>Отрицательная S</td>
+                    <td> {{ reg.otrS_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Другой регион</td>
+                    <td> {{ reg.drugoiReg_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Условные</td>
+                    <td> {{ reg.uslovnye_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Обособленные</td>
+                    <td> {{ reg.obosoblennye }}</td>
+                </tr>
+
+
+                <tr>
+                    <td>Количествол оцененных объектов</td>
+                    <td>{{ reg.count_ocenka_obj_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Количествол неоцененных объектов</td>
+                    <td>{{ reg.count_not_ocenka_obj_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Дата акта</td>
+                    <td>{{ reg.date_act_zu|default:'' }}</td>
+                </tr>
+                <tr>
+                    <td>№ Акта</td>
+                    <td>{{ reg.number_act_zu|default:'' }}</td>
+                </tr>
+                <tr>
+                    <td>Дата фактической отправки</td>
+                    <td>{{ reg.date_output_zu|default:'' }}</td>
+                </tr>
+                    <tr>
+                        <td>Номер сопроводительного письма</td>
+                        <td>{{ reg.number_mail_zu|default:'' }}</td>
+                    </tr>
+
+                <tr style="border-bottom: #fff;">
+                    <td>
+                        <div style="text-align: end">
+                            <t style="font-size:0.8rem">Раскрыть примечание</t>
+
+                        </div>
+                    </td>
+                    <td>
+                        <input class="form-check-input form-check-input1" type="checkbox" name="zu_detail"
+                               id="check_zu_detail" onclick="check_zu_detail()"></td>
+
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="mb-4 card width_primechanie_detail_oks" id="prim_zu_detail" style="display:none">
+        <div class="card-header li__flex">
+            <h5 class="card-title">Примечание ЗУ</h5>
+        </div>
+
+        <div class="card-body">
+            <!--Отрицательная S ОКС-->
+            <div class="li__flex" style="justify-content: center;">
+                <div>
+                    <table class="table table-bordered table__style__detail">
+                        <t class="margin__otrS"><b>Отр S</b></t>
+                        <thead>
+                        <tr class="align__center">
+                            <th valign="middle" scope="col">№</th>
+                            <th scope="col">КН</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for fk_OtrSquaria_zu in reg.fk_OtrSquaria_zu.all %}
+
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ fk_OtrSquaria_zu.kh_OtrSquaria_zu }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="align__center div__padding__detail">
+                    <!--Другой РЕГ-->
+                    <table class="table table-bordered table__style__detail">
+                        <t class="margin__otrS"><b>Другой регион</b></t>
+                        <thead>
+                        <tr class="align__center">
+                            <th valign="middle" scope="col">№</th>
+                            <th scope="col">КН</th>
+                            <th>Адрес</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for fk_DrugoiReg_zu in reg.fk_DrugoiReg_zu.all %}
+
+                            <tr>
+                                <td>
+                                    {{ forloop.counter }}
+                                </td>
+                                <td>{{ fk_DrugoiReg_zu.kh_DrugoiReg_zu }}</td>
+                                <td>{{ fk_DrugoiReg_zu.adress_DrugoiReg_zu }}</td>
+
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="mb-4 card granitsy09 width_table_detail09">
+            <div class="card-header">
+                <h5 class="card-title"><b>ОКС</b></h5>
+            </div>
+            <div class="card-body">
+
+                <div class="row list-group-item li__flex div__width">
+                    <h6 class="col align__center ">Название перечня в АСОН{{ formRegData.nameAson_oks }}</h6>
+                </div>
+                <div class=" row list-group-item li__flex div__width">
+                    <h6 class="col align__center">Загружено ОН{{ formRegData.zagruzhenoOH_oks }}</h6>
+                    <h6 class="col align__center">Получено ОН{{ formRegData.poluchenoOH_oks }}</h6>
+                    <h6 class="col align__center">Повторных ОН{{ formRegData.povtornyhOH_oks }}</h6>
+                </div>
+
+
+                <div class=" row list-group-item li__flex div__width">
+                    <h6 class="col align__center" oninput="Otr_S_OKS_Update()">Отр. S{{ formRegData.otrS_oks }}</h6>
+                    <h6 class="col align__center" oninput="drygoiRegion_OKS_Update()">Другой
+                        регион{{ formRegData.drugoiReg_oks }}</h6>
+                    <h6 class="col align__center" oninput="Yslovniu_OKS_Update()">
+                        Условные{{ formRegData.uslovnye_oks }}</h6>
+                    <h6 class="col align__center" oninput="Not_KN_OKS_Update()">Без КН{{ formRegData.bezKn_oks }}</h6>
+                    <h6 class="col align__center" oninput="ENK_OKS_Update()">ЕМК{{ formRegData.enk_oks }}</h6>
+                </div>
+
+                                <div class=" row list-group-item li__flex div__width" style="width: 75%">
+                    <h6 class="col align__center">Кол-во оцененных объектов {{ formRegData.count_ocenka_obj_oks }}</h6>
+                                    <h6 class="col align__center">Кол-во неоцененных
+                                        объектов{{ formRegData.count_not_ocenka_obj_oks }}</h6>
+                                </div>
+
+                <div class=" row list-group-item li__flex div__width" style="width: 75%">
+                    <h6 class="col align__center">Дата акта{{ formRegData.date_act_oks }}</h6>
+                    <h6 class="col align__center">№ акта {{ formRegData.number_act_oks }}</h6>
+                    <div class="form-check form-switch"
+                         style="width: 0rem; align-self: center; margin-top: 0.9rem;}">
+                        <input class="form-check-input form-check-inputes" type="checkbox" role="switch"
+                               id="newCounter1"
+                               data-counter="{{ new_counter }}">
+                    </div>
+                </div>
+                <div class=" row list-group-item li__flex div__width" style="width: 75%;">
+                    <h6 class="col align__center">Дата фактической отправки: {{ formRegData.date_output_oks }} </h6>
+                    <h6 class="col align__center">№ сопроводительного письма: {{ formRegData.number_mail_oks }} </h6>
+                </div>
+            </div>
+        </div>
+        <div style="width: 121%">
+            {% include "components/update/update_oks_primechanie.html" %}
+        </div>
+    </div>
+    <div style="text-align: center">
+        <button type="submit" class="btn btn-success">Сохранить</button>
+    </div>
+
+</div>
+
+
+

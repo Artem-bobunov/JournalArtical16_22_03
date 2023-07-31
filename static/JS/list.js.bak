@@ -1,0 +1,98 @@
+$(document).ready(function() {
+    // Следим за изменениями состояния checkbox-ов
+    $("#flexSwitchCheckDefault1, #flexSwitchCheckDefault2").change(function () {
+        var totalPolucheno1 = 0;
+        var totalZagruzheno1 = 0;
+        var totalCountOcenka1 = 0;
+        var totalCountNotOcenka1 = 0;
+        var totalpoluchenoZU2 = 0;
+        var totalZagruzhenoZU2 = 0;
+        var totalCountOcenkaZU2 = 0;
+        var totalCountNotOcenkaZU2 = 0;
+
+        $("input#flexSwitchCheckDefault1:checked").each(function () {
+            totalPolucheno1 += parseInt($(this).data("polucheno"));
+            totalZagruzheno1 += parseInt($(this).data("zagruzheno"));
+            totalCountOcenka1 += parseInt($(this).data("ocenka"));
+            totalCountNotOcenka1 += parseInt($(this).data("not-ocenka"));
+        });
+
+        $("input#flexSwitchCheckDefault2:checked").each(function () {
+            totalpoluchenoZU2 += parseInt($(this).data("poluchenozu"));
+            totalZagruzhenoZU2 += parseInt($(this).data("zagruzhenozu"));
+            totalCountOcenkaZU2 += parseInt($(this).data("ocenkazu"));
+            totalCountNotOcenkaZU2 += parseInt($(this).data("not-ocenkazu"));
+        });
+
+        var sum1 = totalCountOcenka1 + totalCountNotOcenka1;
+        var sum2 = totalCountOcenkaZU2 + totalCountNotOcenkaZU2;
+        var sum = sum1 + sum2
+        var totalPolucheno  = totalPolucheno1 + totalpoluchenoZU2
+        var totalZagruzheno = totalZagruzheno1 + totalZagruzhenoZU2
+
+        if (isNaN(sum1)) {
+            sum1 = 0;
+        }
+
+        if (isNaN(sum2)) {
+            sum2 = 0;
+        }
+
+        // Выводим итоговые значения в соответствующие элементы на странице
+        $("#total-poluchenoOH").text(totalPolucheno);
+        $("#total-zagruzhenoOH").text(totalZagruzheno);
+        $("#total-count_ocenka").text(sum);
+
+        $("#total-poluchenoOH_zu").text(totalpoluchenoZU2);
+        $("#total-zagruzhenoOH_zu").text(totalZagruzhenoZU2);
+        $("#total-count_ocenka1").text(sum2);
+
+        localStorage.setItem('checkbox1', $('#flexSwitchCheckDefault1').prop('checked'));
+        localStorage.setItem('checkbox2', $('#flexSwitchCheckDefault2').prop('checked'));
+
+    });
+
+});
+
+
+
+// функция для обработки изменения фильтра
+function handleFilterChange() {
+    // получаем выбранную опцию
+    var selectedOption = document.querySelector('#dropdown').value;
+    // находим все поля ОКС и ЗУ
+    var oksFields = document.querySelectorAll('[id^=oks_container]');
+    var zuFields = document.querySelectorAll('[id^=zu_container]');
+    // скрываем или показываем поля в зависимости от выбранной опции
+    if (selectedOption === '') { // если ничего не выбрано, показываем все поля
+        for (var i = 0; i < oksFields.length; i++) {
+            oksFields[i].style.display = '';
+        }
+        for (var i = 0; i < zuFields.length; i++) {
+            zuFields[i].style.display = '';
+        }
+		console.log('Hello1')
+    } else if (selectedOption === 'ЗУ') {
+        for (var i = 0; i < oksFields.length; i++) {
+            oksFields[i].style.display = 'none';
+        }
+        for (var i = 0; i < zuFields.length; i++) {
+            zuFields[i].style.display = '';
+        }
+		console.log('Hello2')
+    } else {
+        for (var i = 0; i < oksFields.length; i++) {
+            oksFields[i].style.display = '';
+        }
+        for (var i = 0; i < zuFields.length; i++) {
+            zuFields[i].style.display = 'none';
+        }
+		console.log('Hello3')
+
+    }
+}
+
+// вызываем функцию обработки изменения фильтра при загрузке страницы
+window.onload = function() {
+    handleFilterChange();
+};

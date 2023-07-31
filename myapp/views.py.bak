@@ -1,0 +1,491 @@
+import docxtpl
+import numpy as np
+from django.db.migrations import writer
+from django.db.models import Q, Max
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import *
+from django.db import DatabaseError, transaction
+from openpyxl import Workbook
+from .forms import *
+from django.core.paginator import Paginator
+from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth import authenticate, logout, login
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from django.forms import modelformset_factory
+from .filters import MRFilter
+from .otchet import docx
+import django_filters
+
+us_journal = {
+    '07':
+        [
+            'Никитин Денис Валерьевич',
+            'Александров Александр Александрович',
+            'Бобунов Артем Владимирович',
+            'Деточенко Юлия Андреевна',
+            'Меликян Сюзанна Кареновна',
+            'Бакулин Алексей Алексеевич',
+            'Султанов Денис Шакирович',
+        ],
+    '08':
+        [
+            'Леонтьева Ольга Петровна',
+            'Алиева Раиса Александровна',
+            'Липин Евгений Александрович',
+            'Кряжева Юлия Александровна',
+            'Губарь Анна Александровна',
+            'Петрухина Ирина Павловна',
+            'Пикина Ирина Борисовна',
+            'Сологубова Анастасия Романовна',
+            'Филюкова Мария Михайловна',
+            'Чепцова Александра Николаевна',
+            'Сербина Татьяна Александровна',
+        ],
+    '09':
+        [
+            'Селеменчук Елена Владимировна',
+            'Акинтикова Екатерина Владимировна',
+            'Горбатикова Яна Евгеньевна',
+            'Катасонова Инга Юрьевна',
+            'Бородина Екатерина Вячеславовна',
+            'Волкова Арина Алексеевна',
+            'Леонтьева Наталия Петровна',
+            'Мелкумян Валерия Евгеньевна',
+            'Сологубов Михаил Алексеевич',
+        ],
+}
+
+class LoginUser(LoginView):
+    form_class = LoginUserForm
+    template_name = 'login.html'
+    def get_success_url(self):
+        return reverse_lazy('list')
+
+
+def logout_user(request):
+    try:
+        del request.session['username, password']
+    except:
+        pass
+    logout(request)
+    return redirect('login')
+
+def oks(request):
+    if request.method == 'POST':
+        if request.POST.get('oks'):
+            print(RegData.objects.filter(oks='ОКС'))
+
+from django.http import JsonResponse
+import json
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+
+@csrf_exempt
+def update_data(request, id):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        obj = RegData.objects.get(id=id)
+        for key, value in data.items():
+            setattr(obj, key, value)
+        obj.save()
+        print('Data updated:', obj)
+        return JsonResponse({'status': 'ok'})
+    else:
+        return JsonResponse({'status': 'error'})
+
+@login_required(login_url='login')
+def get_max_values(request):
+    max_zu = RegData.objects.aggregate(Max('number_act_zu'))['number_act_zu__max']
+    max_oks = RegData.objects.aggregate(Max('number_act_oks'))['number_act_oks__max']
+    data = {'max_zu': max_zu, 'max_oks': max_oks}
+    return JsonResponse(data)
+
+def check_value(request):
+    value = request.GET.get('value', '')
+    exists = RegData.objects.filter(number_act_zu=value).exists()
+    return JsonResponse({'exists': exists})
+
+@login_required(login_url='login')
+def list(request):
+    obj = RegData.objects.order_by('-id')
+    query_dict = request.GET
+    query = query_dict.get("q")
+    if query is not None:
+        obj = RegData.objects.filter(
+            Q(numberIshod__icontains=query) |
+            Q(numberVhod__icontains=query) |
+            Q(nameAson_oks__icontains=query) |
+            Q(nameAson_zu__icontains=query) |
+            Q(number_act_oks__icontains=query) |
+            Q(number_act_zu__icontains=query) |
+            Q(number_mail_oks__icontains=query) |
+            Q(oks__icontains=query) |
+            Q(number_mail_zu__icontains=query))
+    myFilter = MRFilter(request.GET, queryset=obj)
+    obj = myFilter.qs
+    file_download = docx(obj)
+    max_zu = RegData.objects.aggregate(Max('number_act_zu'))['number_act_zu__max']
+    max_oks = RegData.objects.aggregate(Max('number_act_oks'))['number_act_oks__max']
+
+    if 'export' in request.GET:
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="Данные.xlsx"'
+
+        myFilter = MRFilter(request.GET, queryset=obj)
+        filtered_queryset = myFilter.qs
+        # Получаем отфильтрованные данные
+        data = filtered_queryset.values_list('id', 'dateIshod', 'numberIshod', 'deteVoznikosnov')
+        print('Data before filter:', data)
+
+        header = ['№', 'Дата исходящего', 'Номер исходящего документа', 'Дата возникновения основания']
+
+        # Write data to Excel file
+        wb = Workbook()
+        ws = wb.active
+        ws.append(header)
+        for row in data:
+            ws.append(row)
+        wb.save(response)
+        return response
+
+    paginator = Paginator(obj, 40)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    last_name = request.user.last_name
+    first_name = request.user.first_name
+    users = UserName.objects.get(name=last_name + ' ' + first_name).departament
+    context = {'file_download':file_download,
+        'obj':obj,'query':query, 'page_obj':page_obj, 'users': users, 'myFilter': myFilter, 'max_zu': max_zu, 'max_oks': max_oks
+    }
+    return render(request, 'list.html', context)
+
+# @login_required(login_url='login')
+# def exportcsv(request):
+#     myFilter = MRFilter(request.GET, queryset=RegData.objects.all())
+#     obj = myFilter.qs
+#     response = HttpResponse(content_type='application/vnd.ms-excel')
+#     response['Content-Disposition'] = 'attachment; filename="BD.xlsx"'
+#     wb = Workbook()
+#     ws = wb.active
+#     ws.append(['№','Дата исходящего', 'Номер исходящего документа', 'Дата возникновения основания', 'Дата входящего', 'Номер входящего документа', 'Дата отправки по ФЗ', 'ОКС галочка', 'ЗУ галочка','Название перечня в АСОН (ОКС)','Загружено ОН (ОКС)', 'Получено ОН (ОКС)', 'Потворных ОН (ОКС)', 'Отрицательная площадь (ОКС)', 'Другой регион (ОКС)', 'Условные (ОКС)', 'Без КН (ОКС)', 'ЕНК (ОКС)', 'Название перечня в АСОН (ЗУ)', 'Загружено ОН (ЗУ)', 'Получено ОН (ЗУ)', 'Потворных ОН (ЗУ)', 'СХ (ЗУ)', 'Название СХ (ЗУ)', 'НП (ЗУ)', 'Название НП (ЗУ)', 'ООТ (ЗУ)', 'Название ООТ (ЗУ)', 'ВФ (ЗУ)', 'Название ВФ (ЗУ)', 'Пром (ЗУ)', 'ЛФ (ЗУ)', 'ЗЗ (ЗУ)', 'Без кат (ЗУ)', 'Отрицательная S (ЗУ)', 'Другой регион (ЗУ)', 'Условные (ЗУ)', 'Обособленные (ЗУ)', '№ акта ОКС', '№ акта ЗУ', 'Дата акта ОКС', 'Дата акта ЗУ', 'Количествол оцененных объектов ОКС', 'Количествол оцененных объектов ЗУ', 'Количествол неоцененных объектов ОКС', 'Количествол неоцененных объектов ЗУ', 'дата фактической отправки ОКС', 'Номер сопроводительного письма ОКС'      ])
+#     for reg in obj:
+#         ws.append([reg.id, reg.dateIshod, reg.numberIshod, reg.deteVoznikosnov, reg.dateVhod, reg.numberVhod, reg.dateOtpravkiPoFz, reg.oks, reg.zu,
+#              reg.nameAson_oks,reg.zagruzhenoOH_oks, reg.poluchenoOH_oks, reg.povtornyhOH_oks, reg.otrS_oks, reg.drugoiReg_oks, reg.uslovnye_oks,
+#              reg.bezKn_oks, reg.enk_oks,reg.nameAson_zu, reg.zagruzhenoOH_zu, reg.poluchenoOH_zu, reg.povtornyhOH_zu, reg.sx, reg.nameSx, reg.np, reg.nameNp,
+#              reg.oot,reg.nameOot, reg.vf, reg.nameVf,reg.prom, reg.lf, reg.zz, reg.bezCat, reg.otrS_zu, reg.drugoiReg_zu, reg.uslovnye_zu, reg.obosoblennye, reg.number_act_oks,
+#              reg.number_act_zu, reg.date_act_oks,reg.date_act_zu, reg.count_ocenka_obj_oks, reg.count_ocenka_obj_zu, reg.count_not_ocenka_obj_oks,
+#              reg.count_not_ocenka_obj_zu, reg.date_output_oks, reg.number_mail_oks])
+#     wb.save(response)
+#     return response
+
+
+@login_required(login_url='login')
+def update(request, id):
+    reg = RegData.objects.get(id=id)
+    form = FormDateReg(instance=reg) # здесь не нужно передавать request.POST
+
+    last_object = RegData.objects.aggregate(Max('number_act_oks'))['number_act_oks__max']
+    last_object_zu = RegData.objects.aggregate(Max('number_act_zu'))['number_act_zu__max']
+
+    if last_object is None:
+        last_object = 'АОКС-34/2023/000001'
+    else:
+        last_counter = int(last_object.split('/')[-1])
+        new_counter = last_counter + 1
+        last_object_prefix = '/'.join(last_object.split('/')[:-1])
+        last_object = f"{last_object_prefix}/{new_counter:06d}"
+
+    if last_object_zu is None:
+        last_object_zu = 'АЗУ-34/2023/000001'
+    else:
+        last_counter_zu = int(last_object_zu.split('/')[-1])
+        new_counter_zu = last_counter_zu + 1
+        last_object_prefix_zu = '/'.join(last_object_zu.split('/')[:-1])
+        last_object_zu = f"{last_object_prefix_zu}/{new_counter_zu:06d}"
+
+    input_value = max(last_object, last_object_zu)
+    number_act_oks = input_value
+
+
+    last_name = request.user.last_name
+    first_name = request.user.first_name
+    users = UserName.objects.get(name=last_name + ' ' + first_name).departament
+
+    OtrSquaria_oksFormSet = modelformset_factory(OtrSquaria_oks, form=FormOtrSquaria_oks, extra=0)
+    DrugoiReg_oksFormSet = modelformset_factory(DrugoiReg_oks, form=FormDrugoiReg_oks, extra=0)
+    Uslovnye_oksFormSet = modelformset_factory(Uslovnye_oks, form=FormUslovnye_oks, extra=0)
+    BezKn_oksFormSet = modelformset_factory(BezKn_oks, form=FormBezKn_oks, extra=0)
+    OtrSquaria_zuFormSet = modelformset_factory(OtrSquaria_zu, form=FormOtrSquaria_zu, extra=0)
+    DrugoiReg_zuFormSet = modelformset_factory(DrugoiReg_zu, form=FormDrugoiReg_zu, extra=0)
+    Enk_oksFormSet = modelformset_factory(Enk_oks, form=FormEnk_oks, extra=0)
+
+    otr_squaria_oks_formset = OtrSquaria_oksFormSet(queryset=reg.fk_OtrSquaria_oks.filter(id_oks_otr=id))
+    drugoy_reg_oks_formset = DrugoiReg_oksFormSet(queryset=reg.fk_DrugoiReg_oks.filter(id_oks_DrugoiReg=id))
+    uslovnye_oks_oks_formset = Uslovnye_oksFormSet(queryset=reg.fk_Uslovnye_oks.filter(id_uslovnye_oks=id))
+    bezkn_oks_formset = BezKn_oksFormSet(queryset=reg.fk_Kn_oks.filter(id_bezKn_oks=id))
+    otr_squaria_zu_formset = OtrSquaria_zuFormSet(queryset=reg.fk_OtrSquaria_zu.filter(id_otrS_zu=id))
+    drugoy_reg_zu_formset = DrugoiReg_zuFormSet(queryset=reg.fk_DrugoiReg_zu.filter(id_zu_DrugoiReg=id))
+    enk_formset = Enk_oksFormSet(queryset=reg.fk_Enk_oks.filter(id_enk_oks=id))
+
+    if request.method == 'POST':
+        form = FormDateReg(request.POST, instance=reg)
+        otr_squaria_oks_formset = OtrSquaria_oksFormSet(queryset=reg.fk_OtrSquaria_oks.filter(id_oks_otr=id))
+        drugoy_reg_oks_formset = DrugoiReg_oksFormSet(queryset=reg.fk_DrugoiReg_oks.filter(id_oks_DrugoiReg=id))
+        uslovnye_oks_oks_formset = Uslovnye_oksFormSet(queryset=reg.fk_Uslovnye_oks.filter(id_uslovnye_oks=id))
+        bezkn_oks_formset = BezKn_oksFormSet(queryset=reg.fk_Kn_oks.filter(id_bezKn_oks=id))
+        otr_squaria_zu_formset = OtrSquaria_zuFormSet(queryset=reg.fk_OtrSquaria_zu.filter(id_otrS_zu=id))
+        drugoy_reg_zu_formset = DrugoiReg_zuFormSet(queryset=reg.fk_DrugoiReg_zu.filter(id_zu_DrugoiReg=id))
+        enk_formset = Enk_oksFormSet(queryset=reg.fk_Enk_oks.filter(id_enk_oks=id))
+
+        if form.is_valid() or otr_squaria_oks_formset.is_valid() or drugoy_reg_oks_formset.is_valid() or uslovnye_oks_oks_formset.is_valid() or bezkn_oks_formset.is_valid() or enk_formset.is_valid() or otr_squaria_zu_formset.is_valid() or drugoy_reg_zu_formset.is_valid():
+            reg_data = form.save(commit=False)
+
+                                    #Отрицательная площадь ОКС
+
+            otrs_oks = request.POST.getlist("kh1[]")
+            if reg.otrS_oks:
+                reg.fk_OtrSquaria_oks.all().delete()
+                for obj in range(reg.otrS_oks):
+                    form_str = f"form-{obj}-kh_OtrSquaria_oks"
+                    kh_value = request.POST.get(form_str)
+                    if kh_value:
+                        otr_squaria_oks = OtrSquaria_oks.objects.create(kh_OtrSquaria_oks= kh_value,id_oks_otr = reg_data.id)
+                        reg_data.fk_OtrSquaria_oks.add(otr_squaria_oks)
+                if otrs_oks:
+                    for i in request.POST.getlist("kh1[]"):
+                        otr_s_oks = OtrSquaria_oks.objects.create(kh_OtrSquaria_oks=i, id_oks_otr=reg_data.id)
+                        reg.fk_OtrSquaria_oks.add(otr_s_oks)
+                        reg.save()
+
+                                    # Другой регион ОКС
+
+            drugoy_oks = request.POST.getlist("kn_oks[]")
+            adress_oks = request.POST.getlist("adress_oks[]")
+
+            if reg.drugoiReg_oks:
+                reg.fk_DrugoiReg_oks.all().delete()
+                for obj in range(reg.drugoiReg_oks):
+                    form_str = f"form-{obj}-kh_DrugoiReg_oks"
+                    form_str_adress = f"form-{obj}-adress"
+                    kh_value = request.POST.get(form_str)
+                    adress_value = request.POST.get(form_str_adress)
+                    if kh_value:
+                        drugoy_reg_oks = DrugoiReg_oks.objects.create(kh_DrugoiReg_oks=kh_value, adress=adress_value, id_oks_DrugoiReg=reg_data.id)
+                        reg_data.fk_DrugoiReg_oks.add(drugoy_reg_oks)
+
+                if adress_oks or drugoy_oks:
+                    for j in request.POST.getlist("kn_oks[]"):
+                        for d in request.POST.getlist("adress_oks[]"):
+                            adress_oks = DrugoiReg_oks.objects.create(kh_DrugoiReg_oks=j, adress=d, id_oks_DrugoiReg=reg_data.id)
+                            reg.fk_DrugoiReg_oks.add(adress_oks)
+                            reg.save()
+                        break
+
+                                        # Условные окс
+            uslov_oks = request.POST.getlist("kh3[]")
+            if reg.uslovnye_oks:
+                reg.fk_Uslovnye_oks.all().delete()
+                for obj in range(reg.uslovnye_oks):
+                    form_str = f"form-{obj}-kh_Uslovnye_oks"
+                    kh_value = request.POST.get(form_str)
+                    if kh_value:
+                        uslovnye_oks = Uslovnye_oks.objects.create(kh_Uslovnye_oks=kh_value,
+                                                                        id_uslovnye_oks=reg_data.id)
+                        reg_data.fk_Uslovnye_oks.add(uslovnye_oks)
+                if uslov_oks:
+                    for i in request.POST.getlist("kh3[]"):
+                        uslov_oks_oks = Uslovnye_oks.objects.create(kh_Uslovnye_oks=i, id_uslovnye_oks=reg_data.id)
+                        reg.fk_Uslovnye_oks.add(uslov_oks_oks)
+                        reg.save()
+
+            # Без КН
+            bezKn = request.POST.getlist("kh4[]")
+            if reg.bezKn_oks:
+                reg.fk_Kn_oks.all().delete()
+                for obj in range(reg.bezKn_oks):
+                    form_str = f"form-{obj}-kh_BezKn_oks"
+                    kh_value = request.POST.get(form_str)
+                    if kh_value:
+                        bezkn_1oks = BezKn_oks.objects.create(kh_BezKn_oks=kh_value,
+                                                                   id_bezKn_oks=reg_data.id)
+                        reg_data.fk_Kn_oks.add(bezkn_1oks)
+                if bezKn:
+                    for i in request.POST.getlist("kh4[]"):
+                        bezkn_oks_oks = BezKn_oks.objects.create(kh_BezKn_oks=i, id_bezKn_oks=reg_data.id)
+                        reg.fk_Kn_oks.add(bezkn_oks_oks)
+                        reg.save()
+
+                         # ЕНК
+            enk = request.POST.getlist("kh5[]")
+            if reg.enk_oks:
+                reg.fk_Enk_oks.all().delete()
+                for obj in range(reg.enk_oks):
+                    form_str = f"form-{obj}-kh_Enk_oks"
+                    kh_value = request.POST.get(form_str)
+                    if kh_value:
+                        enk_oks = Enk_oks.objects.create(kh_Enk_oks=kh_value,
+                                                              id_enk_oks=reg_data.id)
+                        reg_data.fk_Enk_oks.add(enk_oks)
+                if enk:
+                    for i in request.POST.getlist("kh5[]"):
+                        enk_oks_oks = Enk_oks.objects.create(kh_Enk_oks=i, id_enk_oks=reg_data.id)
+                        reg.fk_Enk_oks.add(enk_oks_oks)
+                        reg.save()
+
+                            # Отрицательная площадь ЗУ
+            otrs_zu = request.POST.getlist("kh8[]")
+            if reg.otrS_zu:
+                reg.fk_OtrSquaria_zu.all().delete()
+                for obj in range(reg.otrS_zu):
+                    #print('Попал сюда')
+                    form_str = f"form-{obj}-kh_OtrSquaria_zu"
+                    kh_value = request.POST.get(form_str)
+                    if kh_value:
+                        #print(kh_value)
+                        otr_squaria_zu = OtrSquaria_zu.objects.create(kh_OtrSquaria_zu= kh_value,id_otrS_zu = reg_data.id)
+                        reg_data.fk_OtrSquaria_zu.add(otr_squaria_zu)
+                if otrs_zu:
+                    for i in request.POST.getlist("kh8[]"):
+
+                        otr_s = OtrSquaria_zu.objects.create(kh_OtrSquaria_zu=i, id_otrS_zu=reg_data.id)
+                        reg.fk_OtrSquaria_zu.add(otr_s)
+                        reg.save()
+
+
+
+            #     ДРугой регион ЗУ
+            drugoy_zu = request.POST.getlist("kh6[]")
+            adress_zu = request.POST.getlist("adress_zu[]")
+
+            if reg.drugoiReg_zu:
+                reg.fk_DrugoiReg_zu.all().delete()
+                for obj in range(reg.drugoiReg_zu):
+                    #print('Попал сюда')
+                    form_str = f"form-{obj}-kh_DrugoiReg_zu"
+                    form_str_adress = f"form-{obj}-adress_DrugoiReg_zu"
+                    kh_value = request.POST.get(form_str)
+                    adress_value = request.POST.get(form_str_adress)
+                    if kh_value:
+                        #print(kh_value)
+                        drugoy_reg_zu = DrugoiReg_zu.objects.create(kh_DrugoiReg_zu=kh_value, adress_DrugoiReg_zu=adress_value, id_zu_DrugoiReg=reg_data.id)
+                        reg_data.fk_DrugoiReg_zu.add(drugoy_reg_zu)
+
+            if adress_zu or drugoy_zu:
+                for j in request.POST.getlist("kh6[]"):
+                    for d in request.POST.getlist("adress_zu[]"):
+                        adress_zu = DrugoiReg_zu.objects.create(adress_DrugoiReg_zu=d, kh_DrugoiReg_zu=j, id_zu_DrugoiReg=reg_data.id)
+                        reg.fk_DrugoiReg_zu.add(adress_zu)
+                        reg.save()
+                    break
+
+
+
+
+
+
+            reg_data.save()
+
+            return redirect(request.session['return_path'])
+
+        else:
+            otr_squaria_zu_formset = OtrSquaria_zuFormSet(queryset=reg.fk_OtrSquaria_zu.filter(id_otrS_zu=id))
+
+    return render(request, 'update.html',
+                  {'formRegData': form, 'users': users, 'reg': reg, 'otr_squaria_zu_formset': otr_squaria_zu_formset, 'drugoy_reg_zu_formset': drugoy_reg_zu_formset,
+                   'otr_squaria_oks_formset': otr_squaria_oks_formset, 'drugoy_reg_oks_formset': drugoy_reg_oks_formset, 'uslovnye_oks_oks_formset': uslovnye_oks_oks_formset,
+                   'bezkn_oks_formset': bezkn_oks_formset, 'enk_formset': enk_formset, 'new_counter': number_act_oks
+                   })
+
+
+#Как сделать, чтобы выводилось в input значение из базы данных, которые вдальнейшем можно будет отредактировать? При этом должна быть возможность редактирования новых созданных строк спомощью JS
+
+@login_required(login_url='login')
+def detail(request, id):
+    request.session['return_path'] = request.META.get('HTTP_REFERER', '/')
+
+    obj = RegData.objects.get(id=id)
+    n = obj.fk_OtrSquaria_zu.all()
+    t = False
+    last_name = request.user.last_name
+    first_name = request.user.first_name
+    users = UserName.objects.get(name = last_name + ' ' + first_name).departament
+    context = {'obj':obj,'n':n, 'users': users}
+    return render(request, 'detail.html',context)
+
+
+
+@login_required(login_url='login')
+def create(request):
+    document = RegData.objects.all().order_by('-id')
+    if request.method == 'POST':
+        formRegData = FormDateReg(request.POST)
+
+        if formRegData.is_valid():
+            try:
+                instance = formRegData.save()
+
+                if request.POST.get('oks'):
+                    instance.oks = 'ОКС'
+                if request.POST.get('zu'):
+                    instance.zu = 'ЗУ'
+                if request.POST.get('catg_zu'):
+                    instance.categoriy_zu = 'Категория ЗУ'
+
+                get_id = instance.id
+
+                for i in request.POST.getlist("kh1[]"):
+                    #Использовать Create  OtrSquaria_oks
+                    otr_s = OtrSquaria_oks.objects.create(kh_OtrSquaria_oks = i, id_oks_otr = get_id )
+                    instance.fk_OtrSquaria_oks.add(otr_s)
+
+                for j in request.POST.getlist("kn_oks[]"):
+                    for j1 in request.POST.getlist("adress_oks[]"):
+                    #Использовать Create  DrugoiReg_oks
+                        drug_reg = DrugoiReg_oks.objects.create(kh_DrugoiReg_oks = j, adress = j1,id_oks_DrugoiReg = get_id)
+                        instance.fk_DrugoiReg_oks.add(drug_reg)
+                        break
+
+                for h in request.POST.getlist("kh3[]"):
+                    #Использовать Create  Uslovnye_oks
+                    usl_oks = Uslovnye_oks.objects.create(kh_Uslovnye_oks=h, id_uslovnye_oks=get_id)
+                    instance.fk_Uslovnye_oks.add(usl_oks)
+
+                for g in request.POST.getlist("kh4[]"):
+                    #Использовать Create  BezKn_oks
+                    bezkn_oks = BezKn_oks.objects.create(kh_BezKn_oks=g, id_bezKn_oks=get_id)
+                    instance.fk_Kn_oks.add(bezkn_oks)
+
+                for k in request.POST.getlist("kh5[]"):
+                    #Использовать Create  Enk_oks
+                    enk_oks = Enk_oks.objects.create(kh_Enk_oks=k, id_enk_oks=get_id)
+                    instance.fk_Enk_oks.add(enk_oks)
+
+                #Для ЗУ
+                for l in request.POST.getlist("kh8[]"):
+                    #Использовать Create  OtrSquaria_zu
+                    otrs_zu = OtrSquaria_zu.objects.create(kh_OtrSquaria_zu=l, id_otrS_zu=get_id)
+                    instance.fk_OtrSquaria_zu.add(otrs_zu)
+
+                for z in request.POST.getlist("kh6[]"):
+                    for z1 in request.POST.getlist("adress_zu[]"):
+                    #Использовать Create  DrugoiReg_zu
+                        drugreg_zu = DrugoiReg_zu.objects.create(kh_DrugoiReg_zu = z, adress_DrugoiReg_zu = z1,id_zu_DrugoiReg = get_id )
+                        instance.fk_DrugoiReg_zu.add(drugreg_zu)
+                        break
+                instance.save()
+                return redirect('/')
+            except Exception as e:
+                print(e)
+    else:
+        formRegData = FormDateReg()
+    last_name = request.user.last_name
+    first_name = request.user.first_name
+    users = UserName.objects.get(name=last_name + ' ' + first_name).departament
+    context = {
+               'formRegData': formRegData, 'document': document, 'users': users
+
+               }
+    return render(request, 'create.html', context)

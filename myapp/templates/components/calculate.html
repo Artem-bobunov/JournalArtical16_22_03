@@ -1,0 +1,203 @@
+<div class="shadow-lg p-3 mb-3 bg-muted rounded" style="width: 70%;margin-left: 15%;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Фильтр
+                </button>
+
+
+                <!-- Modal -->
+
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Фильтрация</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="get">
+
+                                    <h5>Фильтрация по дате</h5>
+                                    <div class='dropdown__flex'>
+                                        <div class="dropdown" style="margin-right: 1rem;">
+                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
+                                                Дата исходящего документа
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {{ myFilter.form.dateIshod }}
+
+                                            </ul>
+                                        </div>
+
+
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
+                                                Дата входящего документа
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {{ myFilter.form.dateVhod }}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class='dropdown__flex'>
+                                        <div class="dropdown">
+                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
+                                                Дата возник. основания
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {{ myFilter.form.deteVoznikosnov }}
+
+                                            </ul>
+                                        </div>
+
+
+                                        <div class="dropdown" style="margin-left: 1rem">
+                                            <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
+                                                Дата отрпавки по ФЗ
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                {{ myFilter.form.dateOtpravkiPoFz }}
+
+                                            </ul>
+                                        </div>
+                                        <div class='dropdown'>
+                                            <div class="dropdown" style="margin-left: 1rem">
+                                                <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                                        data-bs-toggle="dropdown">
+                                                    дата факт. отправки
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    {{ myFilter.form.date_output_oks }}
+
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h5>Фильтрация по виду обьекта</h5>
+                                    <div class="dropdown">{% load widget_tweaks %}
+
+                                        {{ myFilter.form.dropdown|attr:"id:dropdown" }}
+
+                                    </div>
+                                    <hr>
+                                    <h5>Фильтрация по № акта</h5>
+                                     <div class="dropdown">
+                                        {{ myFilter.form.order_by }}
+                                     </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Применить</button>
+                            </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col">
+
+                <div>
+                    Итого получено ОН : <span id="total-poluchenoOH">0</span>
+                </div>
+                <div>
+                    Итого загружено ОН: <span id="total-zagruzhenoOH">0</span>
+                </div>
+                <div>
+                    Итоговая сумма оцененных и неоцененных обьектов: <span id="total-count_ocenka">0</span>
+                </div>
+
+                {% if max_zu >= max_oks %}
+                    <div class="number__act_max">
+                    Максимальное значение № акта:
+                        <span id="total-number_max">{{ max_zu }}</span>
+                    </div>
+                {% else %}
+                <div class="number__act_max">
+                    Максимальное значение № акта:
+                    <span id="total-number_oks">{{ max_oks }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+
+<!-- Add an event listener to the modal window -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     data-bs-toggle="modal" data-bs-target="#myModal" onclick="updateMaxValues()">
+
+    <!-- Modal content -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="place-content: center;">
+                <h4 class="modal-title" id="myModalLabel">Ошибка!</h4>
+            </div>
+            <div class="modal-body">
+                <p>Введенный вами № акта уже существует, измените его, спасибо!</p>
+                <div class="small__div" style="text-align: end; font-size: 0.7rem;">
+                    <!-- Use the same logic to display the max values -->
+                    {% if max_zu >= max_oks %}
+                        <div class="number__act_max">
+                            Максимальное значение № акта:
+                            <span id="total-number_max-modal">{{ max_zu }}</span>
+                        </div>
+                    {% else %}
+                        <div class="number__act_max">
+                            Максимальное значение № акта:
+                            <span id="total-number_oks-modal">{{ max_oks }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modify the JavaScript code to update the values when the modal window is opened -->
+
+
+            <script>
+                function updateMaxValues() {
+                    fetch('/get-max-values/')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.max_zu >= data.max_oks) {
+                            document.querySelector('#total-number_max').textContent = data.max_zu;
+                            document.querySelector('#total-number_max-modal').textContent = data.max_zu; // add this line
+                        } else {
+                            document.querySelector('#total-number_oks').textContent = data.max_oks;
+                            document.querySelector('#total-number_oks-modal').textContent = data.max_oks; // add this line
+                        }
+                    });
+                }
+
+                setInterval(updateMaxValues, 2500); // remove the existing setInterval function and call the function directly
+
+
+            </script>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+

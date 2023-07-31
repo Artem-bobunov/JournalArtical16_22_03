@@ -1,0 +1,82 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block container %}
+<script>
+
+</script>
+<!--Регистрация данных-->
+<div class="display__flex__1">
+<form method="post" >
+    {% csrf_token %}
+    <div class="mb-4 card granitsy">
+        <div class="card-header">
+            <h5 class="card-title"><b>Регистрация данных</b></h5>
+        </div>
+
+        <div class="card-body">
+
+                <t class="t__absolute" style="margin-top: 0rem;">Дата возникновения основания</t>
+                <div class="row list-group-item li__flex div__width">
+                    <t class="col t__width">Исходящий</t>
+                    <h6 class="col">{{formRegData.dateIshod}}</h6>
+                    <h6 class="col">{{formRegData.numberIshod}}</h6>
+                    <h6 class="col">{{formRegData.deteVoznikosnov}}</h6>
+                </div>
+                <div class=" row list-group-item li__flex div__width">
+                    <t class="t__absolute">Дата отправки по ФЗ (10раб.дней)</t>
+                    <t class="col t__width">Входящий</t>
+                    <h6 class="col">{{formRegData.dateVhod}}</h6>
+                    <h6 class="col">{{formRegData.numberVhod}}</h6>
+                    <h6 class="col">{{formRegData.dateOtpravkiPoFz}}</h6>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="oks" value="ОКС" id="myCheck" onclick="myFunction()">
+                    <label class="form-check-label">ОКС</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="zu" value="ЗУ" id="myCheck1" onclick="myFunction1()">
+                    <label class="form-check-label">ЗУ</label>
+                </div>
+        </div>
+    </div>
+
+    <!--ОКС-->
+    <div style="display:none" id="cpo" >
+        <div class="mb-4 card granitsy" >
+            <div class="card-header">
+                <h5 class="card-title"><b>ОКС</b></h5>
+            </div>
+            <div class="card-body">
+
+                    <div class="row list-group-item li__flex div__width">
+                        <h6 class="col align__center ">Название перечня в АСОН{{formRegData.nameAson_oks}}</h6>
+                    </div>
+                    <div class=" row list-group-item li__flex div__width">
+                        <h6 class="col align__center">Загружено ОН{{formRegData.zagruzhenoOH_oks}}</h6>
+                        <h6 class="col align__center">Получено ОН{{formRegData.poluchenoOH_oks}}</h6>
+                        <h6 class="col align__center">Повторных ОН{{formRegData.povtornyhOH_oks}}</h6>
+                    </div>
+                    <div class=" row list-group-item li__flex div__width">
+                        <h6 class="col align__center" oninput="Otr_S_OKS()">Отр. S{{formRegData.otrS_oks}}</h6>
+                        <h6 class="col align__center" oninput="drygoiRegion_OKS()">Другой регион{{formRegData.drugoiReg_oks}}</h6>
+                        <h6 class="col align__center" oninput="Yslovniu_OKS()">Условные{{formRegData.uslovnye_oks}}</h6>
+                        <h6 class="col align__center" oninput="Not_KN_OKS()">Без КН{{formRegData.bezKn_oks}}</h6>
+                        <h6 class="col align__center" oninput="ENK_OKS()">ЕМК{{formRegData.enk_oks}}</h6>
+                    </div>
+            </div>
+        </div>
+            {% include "components/create_primechanie_oks.html" %}
+    </div>
+                                            <!--Примечание ОКС-->
+                                                    <!--ЗУ-->
+    {% include "components/create__zu.html" %}
+                                            <!--Примечание ЗУ-->
+
+    {% include "components/create_primechanie_zu.html" %}
+</div>
+            <div style="text-align: center"><button type="submit" class="btn btn-success">Добавить</button></div>
+
+</form>
+    </div>
+{% endblock %}

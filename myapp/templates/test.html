@@ -1,0 +1,28 @@
+<input type="text" id="pizda1">
+<input type="text" id="pizda2">
+<input type="text" id="pizda3">
+
+<script>
+function checkValues() {
+  var pizda1 = document.getElementById('pizda1').value;
+  var pizda2 = document.getElementById('pizda2').value;
+  var pizda3 = document.getElementById('pizda3').value;
+
+  // Проверяем, что значения в input являются числами
+  if (isNaN(pizda1) || isNaN(pizda2) || isNaN(pizda3)) {
+    document.getElementById('pizda2').style.backgroundColor = 'white'; // Если есть некорректные значения, то не меняем цвет
+    return;
+  }
+
+  if (Number(pizda1) + Number(pizda3) == Number(pizda2)) {
+    document.getElementById('pizda2').style.backgroundColor = 'green';
+  } else {
+    document.getElementById('pizda2').style.backgroundColor = 'red';
+  }
+}
+
+// Вызываем функцию при вводе значений в любой из input
+document.getElementById('pizda1').addEventListener('input', checkValues);
+document.getElementById('pizda2').addEventListener('input', checkValues);
+document.getElementById('pizda3').addEventListener('input', checkValues);
+</script>

@@ -1,0 +1,124 @@
+
+{% extends "./base.html" %}
+
+{% load static %}
+
+{% block container %}
+{% endblock %}
+{% block table %}
+
+<div class="container" >
+    <div class="row" style="margin-top: 1rem">
+        <div class="col-2" >
+            <a class=" btn btn-outline-secondary" type="submit" value="Сброс" href="{% url 'list' %}">Очистить запрос</a>
+        </div>
+
+        <div class="col-sm">
+            <form class="form-inline" action="" method="get">
+                <div class="input-group mb-3">
+            <form class="form-inline" action="" method="post" >
+
+                    <input type="text" class="form-control" placeholder="Введите запрос" aria-label="Введите запросe"
+                           name="q" value="{{ query|default:'' }}">
+                    <button class="btn btn-outline-secondary" type="submit">Поиск</button>
+            </form>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+                 {% include "components/calculate.html" %}
+
+
+
+
+
+
+
+
+
+{% if query %}
+    <p><b>Результаты поиска для запроса "{{ query }}":</b></p>
+{% endif %}
+
+    <table class="table table-bordered table-hover ">
+
+        <thead class="thead-light">
+        <tr valign="middle" class="align-center table-light">
+            <th scope="col">№</th>
+            <th scope="col">Вид объекта</th>
+            <th scope="col">Название перечня в АСОН</th>
+            <th scope="col">Дата отправки по ФЗ</th>
+            <th scope="col">№ акта</th>
+            <th scope="col">Дата акта</th>
+            <th scope="col">Количество оцененых обьектов</th>
+            <th scope="col">Количество неоцененных обьектов</th>
+            <th scope="col">Количество обьектов загруженных</th>
+            <th scope="col">Количество обьектов в XML</th>
+            <th scope="col">Дата фактической отправки</th>
+            <th scope="col">Номер сопроводительного письма Учреждения</th>
+            <th scope="col">Повторяющиеся</th>
+            <th scope="col">Условные</th>
+            <th scope="col">Обособленные ЗУ</th>
+            <th scope="col">Наличие доп.поля</th>
+            <th scope="col">Подсчёт</th>
+            <th scope="col">Категории</th>
+        </tr>
+        </thead>
+
+        {% for obj in page_obj %}
+        {% include "components/list_none.html" %}
+        {% include "components/list_obj.html" %}
+        {% include "components/list_zu.html" %}
+        {% include "components/list_obj_zu.html" %}
+            </tbody>
+        {% endfor %}
+
+    </table>
+    {% include "components/pagination.html" %}
+    <div style="text-align: end">
+{#        <form method="post">#}
+{#            {% csrf_token %}#}
+{#            <input type="submit">#}
+{#            <a id="wsedasdasd" class="btn btn-primary btn-sm" name="docx_tpl" type="submit" href="http://127.0.0.1:8000/media/{{file_download}}" download>Сформировать отчёт</a>#}
+{##}
+{#        </form>#}
+    </div>
+            <div style="text-align: end; justify-content: end;display: flex;">
+
+<form method="get">
+  <button type="submit" class="btn btn-primary" name="export" value="1" style=" margin-right: 1rem;">Выгрузить данные</button>
+</form>
+
+ <a class="btn btn-success" href="http://127.0.0.1:8002/media/{{file_download}}" download>Сформировать отчёт</a>
+  </div>
+{#            <div class="col exportcsv"><a href="{% url 'exprort' %}" style="">#}
+{#            <button type="button" class="btn btn-outline-primary">Выгрузить данные</button>#}
+{#        </a></div>#}
+
+
+
+<style>
+.form-check-inputes:checked {
+    background-color: #ff6600;
+    border-color: #0d6efd;
+}
+</style>
+
+
+<script>
+function sumInputs() {
+   var num1 = Number(document.getElementById("i-12_1").value);
+   var num2 = Number({{ page_obj.id }})
+   num3 = num1;
+   document.getElementById("out-13").innerHTML = "АОКС-34/2023/" + num3.toString().padStart(6, '0');
+   console.log(num1++)
+    console.log(num2)
+}
+
+</script>
+
+{% endblock %}
+
+
+

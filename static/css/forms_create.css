@@ -1,0 +1,69 @@
+.width__date{
+    max-width: 10rem;
+    margin-left: 3rem;
+}
+.width__text{
+    width: 15rem;
+}
+
+.li__flex{
+    display: flex;
+    border: none;
+}
+
+.div__width{
+    max-width: 100%;
+    margin-top: 2rem;
+}
+
+.t__width{
+    max-width: 18%;
+}
+
+.t__absolute{
+    position: absolute;
+    margin-left: 42rem;
+    margin-top: -2rem;
+    width: 32%;
+}
+.t__absolute1{
+    position: absolute;
+    margin-left: 42rem;
+    width: 32%;
+}
+
+.align__center{
+text-align: center;
+}
+
+.width__text th{
+text-align: center;
+}
+
+.margin__otrS{
+    margin: 3rem;
+}
+.margin__div{
+margin-right: 1.2rem;
+}
+.margin__div1{
+margin-right: 4.2rem;
+}
+
+.width_Uslov_BezNK_ENK{
+    width: 13.9rem;
+}
+
+.granitsy{
+    width: 83%;
+    border: 1px solid #0000008a;
+}
+
+.display__flex__1{
+    padding-left: 10%;
+}
+
+.btn__width{
+width: 8rem;
+height: 4rem;
+}

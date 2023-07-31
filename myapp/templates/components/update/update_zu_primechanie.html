@@ -1,0 +1,58 @@
+<div class="mb-4 card granitsy" style="display:none" id="cr_pr_zu">
+    <div class="card-header">
+        <h5 class="card-title">Примечание ЗУ</h5>
+    </div>
+    <div class="card-body">
+        <!--Отрицательная S ОКС-->
+        <div class="li__flex" style="justify-content: center;">
+            <div class="margin__div1">
+                <table class="table table-bordered width__text" id="myTable111" style="display: none">
+                    <t class="margin__otrS"><b>Отр S</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for form in otr_squaria_zu_formset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ form.kh_OtrSquaria_zu }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="align__center div__padding__detail">
+
+                <!--Другой РЕГ-->
+                <table class="table table-bordered table__style__detail" id="myTable61">
+                    <t class="margin__otrS"><b>Другой регион</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                        <th>Адрес</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in drugoy_reg_zu_formset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ form.kh_DrugoiReg_zu }}</td>
+                            <td>{{ form.adress_DrugoiReg_zu }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

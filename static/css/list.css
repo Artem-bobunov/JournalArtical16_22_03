@@ -1,0 +1,51 @@
+.align-center
+{
+    text-align:center;
+}
+
+.pointer
+{
+    cursor: pointer;
+}
+
+
+.table__style__detail{
+    width: 100%;
+}
+.div__padding__detail{
+    padding-left: 10px;
+}
+
+
+
+.width_primechanie_detail_oks
+{
+    width: 61rem;
+}
+
+.flex__center__detail{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.li__flex__1{
+    display:flex;
+}
+.margin__left__input_d{
+    justify-content: end;
+    display: flex;
+    width: 100%;
+}
+
+.form-check-input1{
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.width__date1
+{
+    max-width: 16rem;
+    margin-left: 2rem;
+}
+

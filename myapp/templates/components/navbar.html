@@ -1,0 +1,48 @@
+
+<nav class="navbar navbar-light bg-light">
+    <div class="container">
+
+        <a class="navbar-brand logo " href="/">
+            <img src="http://192.168.1.253:8000/static/rest_framework/img/logo.png">
+        </a>
+        <div class="col-sm" >
+            <p style="font-size: 14px;font-weight: bold; padding-left: 30px; margin:0; color:#363A48;">Государственное
+                бюджетное учреждение Волгоградской области Центр государственной кадастровой оценки</p>
+        </div>
+
+        <div class="col-sm">
+            <ul class="navbar-nav ml-auto">
+                {% if users  == '07' %}
+                <li class="nav-item zayav"><a class="btn btn-danger" href="{% url 'create' %}">Добавить документ</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% if user.is_authenticated %}
+                <span class="badge bg-success">{{user.last_name}} {{user.first_name}}</span>
+                <a type="button" class="btn btn-outline-primary" href="{% url 'logout' %}">Выйти</a>
+
+                {% else%}
+                <span class="badge bg-success">Гость</span>
+                <a href="{% url 'login' %}">Войти</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+
+        <style>
+  .badge {
+    margin: 0 auto;
+    padding: 0.60rem;
+    font-size: 15px;
+    font-weight: 400;
+  }
+
+        </style>
+
+
+
+</nav>

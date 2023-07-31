@@ -1,0 +1,9 @@
+.shadow-lg {
+    background: #d7d7d796
+}
+.dropdown__flex{
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}

@@ -1,0 +1,124 @@
+<!--Примечание ОКС-->
+<div class="mb-4 card granitsy" style="display:none" id="cr_pr_oks">
+    <div class="card-header">
+        <h5 class="card-title">Примечание ОКС</h5>
+    </div>
+
+    <div class="card-body">
+        <!--Отрицательная S ОКС-->
+        <div class="li__flex">
+            <div class="margin__div">
+                <table class="table table-bordered " id="myTable2111" style="display: none">
+                    <t class="margin__otrS"><b>Отр S</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in otr_squaria_oks_formset %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ form.kh_OtrSquaria_oks }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="align__center margin__table">
+                <!--Другой РЕГ-->
+                <table class="table table-bordered" id="myTable12121" style="display: none">
+                    <t class="margin__otrS"><b>Другой регион</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                        <th>Адрес</th>
+                    </tr>
+                    </thead>
+                   <tbody>
+                    {% for form in drugoy_reg_oks_formset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ form.kh_DrugoiReg_oks }}</td>
+                            <td>{{ form.adress }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+        <!--Условные-->
+
+        <div class="li__flex align__center">
+            <div class="margin__div">
+                <table class="table table-bordered " id="myTableYslovniu" style="display: none">
+                    <t class="margin__otrS"><b>Условные</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in uslovnye_oks_oks_formset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ form.kh_Uslovnye_oks }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!--Без КН-->
+
+            <div class="margin__div margin__table" >
+                <table class="table table-bordered " id="myTableBezKn_oks" style="display: none">
+                    <t class="margin__otrS"><b>Без КН</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in bezkn_oks_formset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ form.kh_BezKn_oks }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+            <!--ЕНК-->
+
+            <div class="margin__table">
+                <table class="table table-bordered  " id="myTableENK_OKS" style="display: none">
+                    <t class="margin__otrS"><b>ЕНК</b></t>
+                    <thead>
+                    <tr class="align__center">
+                        <th valign="middle" scope="col">№</th>
+                        <th scope="col">КН</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in enk_formset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ form.kh_Enk_oks }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

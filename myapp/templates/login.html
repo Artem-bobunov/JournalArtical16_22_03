@@ -1,0 +1,57 @@
+{% extends "./base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="position-absolute top-50 start-50 translate-middle"
+         style="box-shadow: 1px 1px 10px #bdc3c7; padding:50px 50px; border-radius:5px">
+        <h2 style="font-size:20px; text-align:center;font-weight:600; padding: 0 0 10px 0; ">Авторизация</h2>
+        <div class="form-group">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <label class="form-label" style="display: flex; flex-direction: column;">
+                    <t>Имя пользователя*</t>
+                    {{ form.username }}
+                    <t>Пароль*</t>
+                    {{ form.password }}
+                </label>
+                <div style="text-align: center">
+                    <button type="submit" class="btn btn-primary" style="width: 100%">ВХОД</button>
+                </div>
+                {% if form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Ошибка:</strong> Неверный логин или пароль
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+<style>
+.btn {
+    font-size: 16px;
+    background-color: #71BA51;
+    border-color: #71BA51;
+    --bs-btn-hover-bg: #71BA51;
+    --bs-btn-hover-border-color: #71BA51;
+}
+
+.btn:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.form-input::
+    -webkit-input-placeholder {
+    color: rgba(0, 0, 0, 0.25)
+}
+
+.form-input {
+    border-radius: 3px;
+    border: 1px solid;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+</style>
+{% endblock %}

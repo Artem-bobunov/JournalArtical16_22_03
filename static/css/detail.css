@@ -1,0 +1,96 @@
+.button_update{
+    text-align: center;
+    position: fixed;
+    right: 10%;
+    padding-top: 16%;
+}
+
+
+.btn_update{
+    padding-top: 8%;
+    height: 3rem;
+    text-align: center;
+}
+
+.font_size {
+    font-size: 0.9rem;
+}
+.granitsy1 {
+    width: 75.5%;
+}
+
+.width_table_detail09
+{
+    width: 61rem;
+}
+.width_table_detail{
+    width: 61rem;
+}
+
+.width__text1
+{
+    width: 13rem;
+}
+
+.table>:not(:first-child) {
+    border-bottom: 2px solid rgba(97, 98, 98, 0.37);
+}
+
+
+.bi-info-circle {
+  position: relative;
+}
+
+.bi-info-circle:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px;
+  background-color: rgba(51, 51, 51, 0.61);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0.8;
+  border-radius: 3px;
+
+}
+
+.flex__name
+{
+    align-items: center;
+}
+
+.border__table
+{
+    border-bottom-color: rgba(97, 98, 98, 0.56);
+}
+
+@media screen and (max-width: 768px) {
+    .button_update {
+        right: 5%;
+        padding-top: 10%;
+    }
+}
+
+/* Стили для экранов с шириной от 768 пикселей до 1200 пикселей */
+@media screen and (min-width: 768px) and (max-width: 1200px) {
+    .button_update {
+        right: 15%;
+        padding-top: 12%;
+    }
+}
+
+/* Стили для экранов с шириной более 1200 пикселей */
+@media screen and (min-width: 1200px) {
+    .button_update {
+        right: 0;
+        padding-top: 14%;
+    }
+}  @media screen and (min-width: 1920px) {
+    .button_update {
+        right: 10%;
+        padding-top: 14%;
+    }
+}

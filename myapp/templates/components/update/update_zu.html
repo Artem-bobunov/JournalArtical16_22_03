@@ -1,0 +1,122 @@
+                                                    <!--ЗУ-->
+<div style="display:none" id="cz">
+<div class="mb-4 card granitsy" >
+    <div class="card-header">
+        <h5 class="card-title"><b>ЗУ</b></h5>
+    </div>
+    <div class="card-body">
+
+            <div class="row list-group-item li__flex div__width">
+                <h6 class="col align__center ">Название перечня в АСОН{{formRegData.nameAson_zu}}</h6>
+            </div>
+            <div class=" row list-group-item li__flex div__width">
+                <h6 class="col align__center">Загружено ОН{{formRegData.zagruzhenoOH_zu}}</h6>
+                <h6 class="col align__center">Получено ОН{{formRegData.poluchenoOH_zu}}</h6>
+                <h6 class="col align__center">Повторных ОН{{formRegData.povtornyhOH_zu}}</h6>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="catg_zu" value="ОКС" id="myCheck1_1" onclick="myFunction1_1()">
+                <label class="form-check-label">Категории ЗУ</label>
+            </div>
+
+    <div id="cz1_1" style="display:none">
+    <div class=" row list-group-item li__flex div__width flex__name">
+                <h6 class="col align__center">СХ
+                    <div class="bi bi-info-circle" data-tooltip="земли сельскохозяйственного назначения" style="display: inline-block; width: 0.8rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class=""
+                             style="margin-bottom: 1rem;" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>
+                    </div>
+                    {{ formRegData.sx }}
+                </h6>
+                <h6 class="col align__center">Название СХ{{formRegData.nameSx}}</h6>
+                <h6 class="col align__center">№ акта CХ{{formRegData.numberSx}}</h6>
+                <h6 class="col align__center">Дата CХ{{formRegData.date_Sx}}</h6>
+            </div>
+            <div class=" row list-group-item li__flex div__width flex__name">
+                <h6 class="col align__center">НП
+                    <div class="bi bi-info-circle" data-tooltip="земли населенных пунктов"
+                         style="display: inline-block; width: 0.8rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class=""
+                             style="margin-bottom: 1rem;" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>
+                    </div>
+                    {{ formRegData.np}}</h6>
+                <h6 class="col align__center">Название НП{{formRegData.nameNp}}</h6>
+                <h6 class="col align__center">№ акта НП{{formRegData.numberNp}}</h6>
+                <h6 class="col align__center">Дата НП{{formRegData.date_Np}}</h6>
+
+            </div>
+        <div class=" row list-group-item li__flex div__width flex__name">
+            <h6 class="col align__center">ООТ
+                <div class="bi bi-info-circle" data-tooltip="земли особо охраняемых территорий и объектов"
+                     style="display: inline-block; width: 0.8rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class=""
+                         style="margin-bottom: 1rem;" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                </div>
+                {{ formRegData.oot }}</h6>
+            <h6 class="col align__center">Название ООТ{{ formRegData.nameOot }}</h6>
+            <h6 class="col align__center">№ акта ООТ{{ formRegData.numberOot }}</h6>
+            <h6 class="col align__center">Дата ООТ{{formRegData.date_Oot}}</h6>
+        </div>
+            <div class=" row list-group-item li__flex div__width flex__name">
+                <h6 class="col align__center">ВФ
+                    <div class="bi bi-info-circle" data-tooltip="земли водного фонда"
+                         style="display: inline-block; width: 0.8rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class=""
+                             style="margin-bottom: 1rem;" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                            <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                        </svg>
+                    </div>
+                    {{ formRegData.vf }}</h6>
+                <h6 class="col align__center">Название ВФ{{formRegData.nameVf}}</h6>
+                <h6 class="col align__center">№ акта ВФ{{formRegData.numberVf}}</h6>
+                <h6 class="col align__center">Дата ВФ{{formRegData.date_Vf}}</h6>
+            </div>
+
+
+
+
+            <div class=" row list-group-item li__flex div__width">
+                            <h6 class="col align__center">Пром{{ formRegData.prom }}</h6>
+                            <h6 class="col align__center">ЛФ{{ formRegData.lf }}</h6>
+                            <h6 class="col align__center">ЗЗ{{ formRegData.zz }}</h6>
+                            <h6 class="col align__center">Без кат{{ formRegData.bezCat }}</h6>
+                        </div>
+    </div>
+            <div class=" row list-group-item li__flex div__width">
+                <h6 class="col align__center" oninput="Otr_S_ZY_Update()">Отр S{{formRegData.otrS_zu}}</h6>
+                <h6 class="col align__center" oninput="drygoiRegion_ZY_Update()">Другой рег{{formRegData.drugoiReg_zu}}</h6>
+                <h6 class="col align__center">Условные{{ formRegData.uslovnye_zu }}</h6>
+                <h6 class="col align__center">Обособленные{{ formRegData.obosoblennye }}</h6>
+            </div>
+        <div class=" row list-group-item li__flex div__width align__center" style="width: 75%">
+            <h6 class="col">Кол-во оцененных объектов: {{ formRegData.count_ocenka_obj_zu }} </h6>
+            <h6 class="col">Кол-во неоцененных объектов: {{ formRegData.count_not_ocenka_obj_zu }} </h6>
+        </div>
+        <div class=" row list-group-item li__flex div__width align__center" style="width: 75%;" id="cz1_2">
+            <h6 class="col">Дата акта: {{ formRegData.date_act_zu }} </h6>
+            <h6 class="col">№ акта: {{ formRegData.number_act_zu }} </h6>
+            <div class="form-check form-switch" style="width: 0rem; align-self: center; margin-top: 0.9rem;}">
+                <input class="form-check-input form-check-inputes" type="checkbox" role="switch"
+                       id="newCounter2"
+                       data-counter="{{ new_counter }}">
+            </div>
+        </div>
+
+        <div class=" row list-group-item li__flex div__width" style="width: 75%;" >
+            <h6 class="col align__center">Дата фактической отправки: {{ formRegData.date_output_zu }} </h6>
+            <h6 class="col align__center">№ сопроводительного письма: {{ formRegData.number_mail_zu }} </h6>
+        </div>
+    </div>
+</div>
+</div>

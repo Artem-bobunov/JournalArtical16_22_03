@@ -1,0 +1,552 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block container %}
+
+    <div class='button_update'>
+        <a class="btn btn-warning btn_update" href="{% url 'update' obj.id %}">Редактировать</a></div>
+    </div>
+
+    <div class="flex__center__detail">
+        <!--Регистрационные данные-->
+        <div>
+            <div class="mb-4 card width_table_detail">
+                <div class="card-header">
+                    <h5 class="card-title">Регистрационные данные</h5>
+                </div>
+                <table class="table table-hover ">
+                    <tr>
+                        <td>Дата исходящего</td>
+                        <td> {{ obj.dateIshod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Номер исходящего</td>
+                        <td> {{ obj.numberIshod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата возникновения основания</td>
+                        <td> {{ obj.deteVoznikosnov|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата входящего</td>
+                        <td> {{ obj.dateVhod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Номер входящего документа</td>
+                        <td> {{ obj.numberVhod|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата отправки по ФЗ</td>
+                        <td> {{ obj.dateOtpravkiPoFz|default:'' }}</td>
+                    </tr>
+
+                    <tr style="border-bottom: #fff;">
+                        <td>Вид объекта</td>
+                        <td>
+                            {% if obj.zu != None %}
+                                {{ obj.zu }}<br>
+                            {% endif %}
+
+                            {% if obj.oks != None %}
+                                {{ obj.oks }}
+
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <!--ОКС-->
+
+            <div class="mb-4 card width_table_detail ">
+                <div class="card-header">
+                    <h5 class="card-title">ОКС</h5>
+                </div>
+                <table class="table table-hover table-sm ">
+                    <tr>
+                        <td>Название перечня в АСОН</td>
+                        <td> {{ obj.nameAson_oks|default:'' }}</td>
+                    </tr>
+                    <tr>
+                        <td>Загружено ОН</td>
+                        <td> {{ obj.zagruzhenoOH_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Получено ОН</td>
+                        <td> {{ obj.poluchenoOH_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Потворных ОН</td>
+                        <td> {{ obj.povtornyhOH_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Отрицательная площадь</td>
+                        <td> {{ obj.otrS_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Другой регион</td>
+                        <td> {{ obj.drugoiReg_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Условные</td>
+                        <td> {{ obj.uslovnye_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Без КН</td>
+                        <td> {{ obj.bezKn_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>ЕНК</td>
+                        <td> {{ obj.enk_oks }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Количествол оцененных объектов</td>
+                        <td>{{ obj.count_ocenka_obj_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Количествол неоцененных объектов</td>
+                        <td>{{ obj.count_not_ocenka_obj_oks }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата акта</td>
+                        <td>{{ obj.date_act_oks|default:"" }}</td>
+                    </tr>
+                    <tr>
+                        <td>№ Акта</td>
+                        <td>{{ obj.number_act_oks|default:"" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Дата фактической отправки</td>
+                        <td>{{ obj.date_output_oks|default:"" }}</td>
+                    </tr>
+                    <tr>
+                        <td>Номер сопроводительного письма</td>
+                        <td>{{ obj.number_mail_oks|default:"" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="mb-4 card width_primechanie_detail_oks">
+            <div class="card-header li__flex" style="display: flex">
+                <h5 class="card-title">Примечание ОКС</h5>
+                <div class="margin__left__input_d">
+                    <t style="font-size:0.8rem">Раскрыть примечание</t>
+
+                    <input class="form-check-input form-check-input1" type="checkbox" name="oks_detail"
+                           id="check_oks_detail" onclick="check_oks_detail()">
+                </div>
+            </div>
+
+            <div class="card-body" id="prim_oks_detail" style="display:none">
+                <!--Отрицательная S ОКС-->
+
+                <div class="li__flex__1" style="justify-content: center;">
+                    <div>
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>Отр S</b></t>
+                            <thead>
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for fk_OtrSquaria_oks in obj.fk_OtrSquaria_oks.all %}
+
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ fk_OtrSquaria_oks.kh_OtrSquaria_oks }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="align__center div__padding__detail">
+                        <!--Другой РЕГ-->
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>Другой регион</b></t>
+                            <thead>
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                                <th>Адрес</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for fk_DrugoiReg_oks in obj.fk_DrugoiReg_oks.all %}
+
+                                <tr>
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>{{ fk_DrugoiReg_oks.kh_DrugoiReg_oks }}</td>
+                                    <td>{{ fk_DrugoiReg_oks.adress }}</td>
+
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!--Условные-->
+
+                <div class="li__flex__1 align__center" style="justify-content: center;">
+                    <div class="div__padding__detail">
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>Условные</b></t>
+                            <thead>
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for fk_Uslovnye_oks in obj.fk_Uslovnye_oks.all %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ fk_Uslovnye_oks.kh_Uslovnye_oks }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--Без КН-->
+
+                    <div class="div__padding__detail">
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>Без КН</b></t>
+                            <thead>
+
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for fk_Uslovnye_oks in obj.fk_Kn_oks.all %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ fk_Uslovnye_oks.kh_BezKn_oks }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!--ЕНК-->
+
+                    <div class="div__padding__detail">
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>ЕНК</b></t>
+                            <thead>
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for fk_Enk_oks in obj.fk_Enk_oks.all %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ fk_Enk_oks.kh_Enk_oks }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!--ЗУ-->
+
+        <div class="mb-4 card width_primechanie_detail_oks">
+            <div class="card-header">
+                <h5 class="card-title">ЗУ</h5>
+            </div>
+            <table class="table table-hover table-sm">
+                <tr>
+                    <td>Название перечня в АСОН</td>
+                    <td> {{ obj.nameAson_zu|default:'' }}</td>
+                </tr>
+                <tr>
+                    <td>Загружено ОН</td>
+                    <td> {{ obj.zagruzhenoOH_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Получено ОН</td>
+                    <td> {{ obj.poluchenoOH_zu }}</td>
+                </tr>
+                <tr class="border__table">
+                    <td>Потворных ОН</td>
+                    <td> {{ obj.povtornyhOH_zu }}</td>
+                </tr>
+                {% if obj.sx %}
+                    <tr>
+                        <td>СХ</td>
+                        <td> {{ obj.sx }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.nameSx %}
+                    <tr>
+                        <td>Название СХ</td>
+                        <td> {{ obj.nameSx|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.numberSx %}
+                    <tr>
+                        <td>№ акта CХ</td>
+                        <td> {{ obj.numberSx|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.date_Sx %}
+                    <tr class="border__table">
+                        <td>Дата CХ</td>
+                        <td> {{ obj.date_Sx|date:'d.m.y'|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.np %}
+                    <tr>
+                        <td>НП</td>
+                        <td> {{ obj.np }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.nameNp %}
+
+                    <tr>
+                        <td>Название НП</td>
+                        <td> {{ obj.nameNp|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.numberNp %}
+                    <tr>
+                        <td>№ акта НП</td>
+                        <td> {{ obj.numberNp|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.date_Np %}
+
+                    <tr class="border__table">
+                        <td>Дата НП</td>
+                        <td> {{ obj.date_Np|date:'d.m.y'|default:'' }}</td>
+                    </tr>
+                    <tr>
+                {% endif %}
+
+                {% if obj.oot %}
+                    <td>ООТ</td>
+                    <td> {{ obj.oot }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.nameOot %}
+                    <tr>
+                        <td>Название ООТ</td>
+                        <td> {{ obj.nameOot|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.numberOot %}
+                    <tr>
+                        <td>№ акта ООТ</td>
+                        <td> {{ obj.numberOot|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.date_Oot %}
+                    <tr class="border__table">
+                        <td>Дата ООТ</td>
+                        <td> {{ obj.date_Oot|date:'d.m.y'|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.vf %}
+                    <tr>
+                        <td>ВФ</td>
+                        <td> {{ obj.vf }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.nameVf %}
+                    <tr>
+                        <td>Название ВФ</td>
+                        <td> {{ obj.nameVf|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.numberVf %}
+                    <tr>
+                        <td>№ акта ВФ</td>
+                        <td> {{ obj.numberVf|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                {% if obj.date_Vf %}
+                    <tr class="border__table">
+                        <td>Дата ВФ</td>
+                        <td> {{ obj.date_Vf|date:'d.m.y'|default:'' }}</td>
+                    </tr>
+                {% endif %}
+
+                <tr>
+                    <td>Пром</td>
+                    <td> {{ obj.prom }}</td>
+                </tr>
+                <tr>
+                    <td>ЛФ</td>
+                    <td> {{ obj.lf }}</td>
+                </tr>
+                <tr>
+                    <td>ЗЗ</td>
+                    <td> {{ obj.zz }}</td>
+                </tr>
+                <tr>
+                    <td>ЛФ</td>
+                    <td> {{ obj.lf }}</td>
+                </tr>
+                <tr>
+                    <td>Без кат</td>
+                    <td> {{ obj.bezCat }}</td>
+                </tr>
+                <tr>
+                    <td>Отрицательная S</td>
+                    <td> {{ obj.otrS_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Другой регион</td>
+                    <td> {{ obj.drugoiReg_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Условные</td>
+                    <td> {{ obj.uslovnye_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Обособленные</td>
+                    <td> {{ obj.obosoblennye }}</td>
+                </tr>
+
+                <tr>
+                    <td>Количество оцененных объектов</td>
+                    <td>{{ obj.count_ocenka_obj_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Количествол неоцененных объектов</td>
+                    <td>{{ obj.count_not_ocenka_obj_zu }}</td>
+                </tr>
+                <tr>
+                    <td>Дата акта</td>
+                    <td>{{ obj.date_act_zu|default:"" }}</td>
+                </tr>
+                <tr>
+                    <td>№ Акта</td>
+                    <td>{{ obj.number_act_zu|default:"" }}</td>
+                </tr>
+                <tr>
+                    <td>Дата фактической отправки</td>
+                    <td>{{ obj.date_output_zu|default:"" }}</td>
+                </tr>
+                <tr>
+                    <td>Номер сопроводительного письма</td>
+                    <td>{{ obj.number_mail_zu|default:"" }}</td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="mb-4 card width_primechanie_detail_oks">
+            <div class="card-header li__flex" style="display: flex">
+                <h5 class="card-title">Примечание ЗУ</h5>
+                <div class="margin__left__input_d">
+                    <t style="font-size:0.8rem">Раскрыть примечание</t>
+
+                    <input class="form-check-input form-check-input1" type="checkbox" name="zu_detail"
+                           id="check_zu_detail" onclick="check_zu_detail()">
+                </div>
+            </div>
+
+            <div class="card-body" id="prim_zu_detail" style="display:none">
+                <!--Отрицательная S ОКС-->
+                <div class="li__flex" style="justify-content: center;">
+                    <div>
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>Отр S</b></t>
+                            <thead>
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            {% for fk_OtrSquaria_zu in obj.fk_OtrSquaria_zu.all %}
+
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ fk_OtrSquaria_zu.kh_OtrSquaria_zu }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="align__center div__padding__detail">
+                        <!--Другой РЕГ-->
+                        <table class="table table-bordered table__style__detail">
+                            <t class="margin__otrS"><b>Другой регион</b></t>
+                            <thead>
+                            <tr class="align__center">
+                                <th valign="middle" scope="col">№</th>
+                                <th scope="col">КН</th>
+                                <th>Адрес</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for fk_DrugoiReg_zu in obj.fk_DrugoiReg_zu.all %}
+
+                                <tr>
+                                    <td>
+                                        {{ forloop.counter }}
+                                    </td>
+                                    <td>{{ fk_DrugoiReg_zu.kh_DrugoiReg_zu }}</td>
+                                    <td>{{ fk_DrugoiReg_zu.adress_DrugoiReg_zu }}</td>
+
+                                </tr>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <style>
+            .table {
+                margin-bottom: 0;
+            }
+
+
+        </style>
+
+{% endblock %}
